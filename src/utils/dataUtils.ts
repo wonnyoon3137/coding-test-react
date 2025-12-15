@@ -92,6 +92,7 @@ export const getCategoryTotals = (products: Product[]): CategorySummary => {
     if (!obj[item.category]) obj[item.category] = { totalPrice: 0 };
     else obj[item.category].totalPrice += item.price;
   });
+
   return obj;
 };
 
