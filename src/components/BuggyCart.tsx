@@ -32,11 +32,13 @@ const BuggyCart: React.FC = () => {
 
   // 버그가 있는 Handler
   const handleIncreaseQuantity = (itemId: number) => {
-    const itemToUpdate = items.find(item => item.id === itemId);
-    if (itemToUpdate) {
-      itemToUpdate.quantity += 1;
-      setItems(items);
-    }
+    // const itemToUpdate = items.find((item) => item.id === itemId);
+    const newArr = items.map((item) => {
+      if (item.id === itemId) {
+        return { ...item, quantity: item.quantity + 1 };
+      } else return item;
+    });
+    setItems(newArr);
   };
 
   const totalPrice = useMemo(() => {
@@ -55,7 +57,7 @@ const BuggyCart: React.FC = () => {
         </p>
       </div>
       <ul className={styles.itemList}>
-        {items.map(item => (
+        {items.map((item) => (
           <li key={item.id} className={styles.item}>
             <span className={styles.itemName}>{item.name}</span>
             <span className={styles.itemPrice}>{item.price.toLocaleString()}원</span>
@@ -66,9 +68,7 @@ const BuggyCart: React.FC = () => {
           </li>
         ))}
       </ul>
-      <div className={styles.totalPrice}>
-        총가격: {totalPrice.toLocaleString()}원
-      </div>
+      <div className={styles.totalPrice}>총가격: {totalPrice.toLocaleString()}원</div>
     </div>
   );
 };
