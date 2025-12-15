@@ -26,7 +26,7 @@ type UserData = {
 
 // 가짜 API 호출 함수
 const fetchUsers = (): Promise<UserData[]> => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve([
         { id: 1, name: '김철수', email: 'chulsoo@example.com', isAdmin: false },
@@ -41,26 +41,30 @@ const fetchUsers = (): Promise<UserData[]> => {
 };
 
 const UserList = () => {
+  //타입은 UserData[]로 명시하는게 좋을것같습니다.
   const [users, setUsers] = useState<any[]>([]); // state 1
+  //filter라는 이름보다 inputValue가 조금 더 직관적인 state명인것같습니다.
   const [filter, setFilter] = useState(''); // state 2
   const [loading, setLoading] = useState(true); // state 3
   const [showAdminsOnly, setShowAdminsOnly] = useState(false); // state 4
 
   // 데이터 로딩
   useEffect(() => {
-    fetchUsers().then(data => {
+    //isError 상태를 만들고, try-catch 구문 안에서 함수를 호출하여 에러핸들링을 할 수 있습니다.
+    fetchUsers().then((data) => {
       setUsers(data);
       setLoading(false);
     });
   }, []);
 
-    // 필터링 로직
-  const filteredUsers = users.filter(user => {
-      const nameMatches = user.name.includes(filter);
-      const emailMatches = user.email.includes(filter);
-      const adminMatches = !showAdminsOnly || user.isAdmin;
-      return (nameMatches || emailMatches) && adminMatches;
-    });
+  // 필터링 로직
+  const filteredUsers = users.filter((user) => {
+    const nameMatches = user.name.includes(filter);
+    const emailMatches = user.email.includes(filter);
+    // 관리자만 보기는 매번 연산을 하는 것보다 조건부렌더링으로 숨김처리하는게 더 좋을것같습니다.
+    const adminMatches = !showAdminsOnly || user.isAdmin;
+    return (nameMatches || emailMatches) && adminMatches;
+  });
 
   return (
     <div className={styles.container}>
@@ -73,15 +77,11 @@ const UserList = () => {
         <input
           type="text"
           placeholder="이름으로 검색..."
-          onChange={e => setFilter(e.target.value)}
+          onChange={(e) => setFilter(e.target.value)}
           className={styles.input}
         />
         <label>
-          <input
-            type="checkbox"
-            checked={showAdminsOnly}
-            onChange={e => setShowAdminsOnly(e.target.checked)}
-          />
+          <input type="checkbox" checked={showAdminsOnly} onChange={(e) => setShowAdminsOnly(e.target.checked)} />
           관리자만 보기
         </label>
       </div>
@@ -98,14 +98,12 @@ const UserList = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers.map(u => (
+            {filteredUsers.map((u) => (
               <tr key={u.id}>
                 <td>{u.name}</td>
                 <td>{u.email}</td>
                 {/* 역할(Role) 표시 */}
-                <td style={{ color: u.isAdmin ? 'blue' : 'black' }}>
-                  {u.isAdmin ? 'Admin' : 'User'}
-                </td>
+                <td style={{ color: u.isAdmin ? 'blue' : 'black' }}>{u.isAdmin ? 'Admin' : 'User'}</td>
               </tr>
             ))}
           </tbody>
