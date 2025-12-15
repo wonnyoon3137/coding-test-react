@@ -1,0 +1,14 @@
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 16px;
+}
+
+.statValue {
+  font-weight: 600;
+}
+
+.statLabel {
+  color: #8e8e8e;
+}

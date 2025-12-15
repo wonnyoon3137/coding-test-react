@@ -1,0 +1,41 @@
+.profileHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 44px;
+}
+
+.avatarContainer {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  margin-right: 30px;
+}
+
+.avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.userInfoContainer {
+  flex: 2;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.username {
+  font-size: 28px;
+  font-weight: 300;
+}
+
+.editProfileButton {
+  background-color: transparent;
+  border: 1px solid #dbdbdb;
+  border-radius: 3px;
+  padding: 5px 9px;
+  font-weight: 600;
+  color: #363636;
+  cursor: pointer;
+}

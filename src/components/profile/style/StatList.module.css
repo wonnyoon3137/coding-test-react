@@ -1,0 +1,8 @@
+.statsSection {
+  display: flex;
+  justify-content: space-around;
+  border-top: 1px solid #dbdbdb;
+  border-bottom: 1px solid #dbdbdb;
+  padding: 12px 0;
+  margin-bottom: 20px;
+}
