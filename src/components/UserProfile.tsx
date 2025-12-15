@@ -51,9 +51,9 @@ interface UserProfileProps {
 
 const UserProfile: React.FC<UserProfileProps> = ({ user, stats, posts }) => {
   const [statsData] = useState([
-    { value: stats.posts, label: '게시물' },
-    { value: stats.followers, label: '팔로워' },
-    { value: stats.following, label: '팔로잉' },
+    { id: 0, value: stats.posts, label: '게시물' },
+    { id: 1, value: stats.followers, label: '팔로워' },
+    { id: 2, value: stats.following, label: '팔로잉' },
   ]);
 
   return (
@@ -67,7 +67,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, stats, posts }) => {
       {/* 3. 사용자 통계 */}
       <StatsList>
         {statsData.map((item) => (
-          <StatItem value={item.value} label={item.label} />
+          <StatItem value={item.value} label={item.label} key={item.id} />
         ))}
       </StatsList>
 
