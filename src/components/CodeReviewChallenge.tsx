@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './CodeReviewChallenge.module.css';
 
 /**
@@ -42,7 +42,7 @@ const fetchUsers = (): Promise<UserData[]> => {
 
 const UserList = () => {
   //타입은 UserData[]로 명시하는게 좋을것같습니다.
-  const [users, setUsers] = useState<any[]>([]); // state 1
+  const [users, setUsers] = useState<UserData[]>([]); // state 1
   //filter라는 이름보다 inputValue가 조금 더 직관적인 state명인것같습니다.
   const [filter, setFilter] = useState(''); // state 2
   const [loading, setLoading] = useState(true); // state 3
@@ -51,6 +51,7 @@ const UserList = () => {
   // 데이터 로딩
   useEffect(() => {
     //isError 상태를 만들고, try-catch 구문 안에서 함수를 호출하여 에러핸들링을 할 수 있습니다.
+    // ![추가] fetchUsers 실패 시를 대비한 error state가 없어, 네트워크 에러 발생 시 사용자에게 적절한 피드백을 주기 어렵습니다.
     fetchUsers().then((data) => {
       setUsers(data);
       setLoading(false);
@@ -58,6 +59,9 @@ const UserList = () => {
   }, []);
 
   // 필터링 로직
+  // ![추가] useMemo로 감싸서 불필요한 재계산 방지 필요
+  // ![추가] 검색어가 빈 문자열일때 early return 가능
+  // ![추가] filter로 문자열 검색 시 대소문자 처리 누락
   const filteredUsers = users.filter((user) => {
     const nameMatches = user.name.includes(filter);
     const emailMatches = user.email.includes(filter);
