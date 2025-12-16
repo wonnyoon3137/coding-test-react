@@ -51,58 +51,89 @@ export const filterActiveUsers = (users: User[]): User[] => {
 // 문제 2: ID로 사용자 찾기
 export const findUserById = (users: User[], id: number): User | undefined => {
   const user = users.find((user) => user.id === id);
-  console.log('2', user);
   return user;
 };
 
 // 문제 3: 사용자 이름을 ID 맵으로 변환
 export const createUserMap = (users: User[]): { [id: number]: string } => {
-  const obj: { [id: number]: string } = {};
-  users.map((user: User) => {
-    if (!obj[user.id]) obj[user.id] = '';
-    else obj[user.id] = user.name;
+  const result: { [id: number]: string } = {};
+  //! forEach를 사용하면 더 간단하게 구현 가능,
+  //! map은 배열 변환할때 사용하기 때문에 좋은 방법은 아님
+  users.forEach((user) => {
+    result[user.id] = user.name;
   });
-  return obj;
+  return result;
 };
 
 // 문제 4: 키를 기준으로 배열 정렬
 export const sortArrayByKey = <T>(array: T[], key: keyof T, order: 'asc' | 'desc'): T[] => {
-  return [];
+  const sorted = [...array].sort((a, b) => {
+    const valueA = a[key];
+    const valueB = b[key];
+    if (valueA === valueB) return 0;
+    if (order === 'asc') {
+      return valueA > valueB ? 1 : -1;
+    }
+    return valueA < valueB ? 1 : -1;
+  });
+  return sorted;
 };
 
 // 문제 5: 페이지네이션 구현
 export const paginate = <T>(array: T[], page: number, pageSize: number): PaginatedResult<T> => {
-  return { items: [], totalItems: 0, totalPages: 0, currentPage: page };
+  const totalItems = array.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const startIndex = (page - 1) * pageSize;
+  const items = array.slice(startIndex, startIndex + pageSize);
+
+  return {
+    items,
+    totalItems,
+    totalPages,
+    currentPage: page,
+  };
 };
 
 // 문제 6: 계산된 속성 추가 (age 가 20 이상을 adult 로 간주합니다)
 export const addIsAdultProperty = (users: User[]): (User & { isAdult: boolean })[] => {
-  users.map((user) => {
+  const result = users.map((user) => {
     if (user.age >= 20) {
       return { ...user, isAdult: true };
     } else return { ...user, isAdult: false };
   });
-  return [];
+  return result;
 };
 
 // 문제 7: 카테고리별 상품 총액 계산
 export const getCategoryTotals = (products: Product[]): CategorySummary => {
-  const obj: CategorySummary = {};
-  products.map((item: Product) => {
-    if (!obj[item.category]) obj[item.category] = { totalPrice: 0 };
-    else obj[item.category].totalPrice += item.price;
+  const result: CategorySummary = {};
+
+  products.forEach((product) => {
+    if (!result[product.category]) {
+      //! 기존 코드에서는 첫 상품의 price가 더해지지 않았음 ..
+      result[product.category] = { totalPrice: product.price };
+    } else {
+      result[product.category].totalPrice += product.price;
+    }
   });
 
-  return obj;
+  return result;
 };
 
 // 문제 8: 두 사용자 배열 병합 및 중복 제거 (중복이 있는 경우 users2 내의 사용자를 사용합니다)
 export const mergeAndDeduplicateUsers = (users1: User[], users2: User[]): User[] => {
-  const arr = [...users1, ...users2];
-  const set = new Set(arr);
-  const result: User[] = [];
-  set.forEach((i) => result.push(i));
-  return result;
+  const userMap = new Map<number, User>();
+
+  //! Map의 set메서드 활용
+  users1.forEach((user) => {
+    userMap.set(user.id, user);
+  });
+
+  users2.forEach((user) => {
+    userMap.set(user.id, user);
+  });
+
+  return Array.from(userMap.values());
 };
 
 // 문제 9: 특정 태그를 가진 사용자 찾기
@@ -112,11 +143,20 @@ export const findUsersByTag = (users: User[], tag: string): User[] => {
 
 // 문제 10: 부서별 사용자 통계 집계
 export const getDepartmentSummary = (users: User[]): DepartmentSummary => {
-  //  [department: string]: {
-  //   userCount: number;
-  //   averageAge: number;
-  // };
-  const obj: DepartmentSummary = {};
+  const summary: DepartmentSummary = {};
 
-  return {};
+  users.forEach((user) => {
+    if (!summary[user.department]) {
+      summary[user.department] = { userCount: 0, averageAge: 0 };
+    }
+
+    summary[user.department].userCount += 1;
+    summary[user.department].averageAge += user.age;
+  });
+
+  Object.keys(summary).forEach((department) => {
+    summary[department].averageAge = summary[department].averageAge / summary[department].userCount;
+  });
+
+  return summary;
 };
